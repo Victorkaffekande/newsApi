@@ -279,3 +279,12 @@ C:\Users\Bruger\Documents\GitHub\newsApi\obj\Debug\net8.0\refint\newsApi.dll
 C:\Users\Bruger\Documents\GitHub\newsApi\obj\Debug\net8.0\newsApi.pdb
 C:\Users\Bruger\Documents\GitHub\newsApi\obj\Debug\net8.0\newsApi.genruntimeconfig.cache
 C:\Users\Bruger\Documents\GitHub\newsApi\obj\Debug\net8.0\ref\newsApi.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Bruger\Documents\GitHub\newsApi\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll

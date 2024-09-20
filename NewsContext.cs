@@ -28,20 +28,16 @@ public class NewsContext : IdentityDbContext<NewsUser>
         var editorRole = SeedIdentityRole(builder, "Editor");
         var writerRole = SeedIdentityRole(builder, "Writer");
         var subscriberRole = SeedIdentityRole(builder, "Subscriber");
-        //var guestRole = SeedIdentityRole(builder, "Guest"); 
 
         //user seed
-
+        
         SeedUser(builder, editorRole, "editor@mail.com", "passwrd");
-
         var writer = SeedUser(builder, writerRole, "writer@mail.com", "passwrd");
         var writer2 = SeedUser(builder, writerRole, "otherWriter@mail.com", "passwrd");
         
         var subscriber = SeedUser(builder, subscriberRole, "subscriber@mail.com", "passwrd");
         var subscriber2 = SeedUser(builder, subscriberRole, "otherSubscriber@mail.com", "passwrd");
         
-
-
         //article Seed
         SeedArticle(builder, "Very cool article", "very cool content", 1, writer);
         SeedArticle(builder, "Article 2", "Lots of article 2 content here", 2, writer2);
@@ -58,6 +54,7 @@ public class NewsContext : IdentityDbContext<NewsUser>
         {
             Id = Guid.NewGuid().ToString(),
             Email = email,
+            NormalizedEmail = email.ToUpper(),
             UserName = email,
             NormalizedUserName = email.ToUpper(),
         };

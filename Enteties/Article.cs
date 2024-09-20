@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace newsApi.Enteties;
 
@@ -11,6 +12,6 @@ public class Article
 
     public string AuthorId { get; set; }
     public NewsUser Autor { get; set; }
-
+    [JsonIgnore]
     public List<Comment> Comments { get; set; }
 }

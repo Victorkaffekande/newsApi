@@ -1,0 +1,15 @@
+﻿services:
+  newsapi:
+    image: newsapi
+    restart: always
+    expose:
+      - 8080
+    ports:
+      - "8080:5000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__AppDb=Data Source=db.db
+    volumes:
+      - ./data:/app/data
