@@ -5,8 +5,11 @@ using newsApi.Enteties;
 
 namespace newsApi;
 
-public class NewsContext : IdentityDbContext
+public class NewsContext : IdentityDbContext<NewsUser>
 {
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+
     public NewsContext(DbContextOptions options) : base(options)
     {
     }
@@ -15,45 +18,68 @@ public class NewsContext : IdentityDbContext
     {
     }
 
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        SetupRelations(builder);
 
-        var editorRole = SeedIdentityRole(builder, "Editor", "22050a18-a733-49cc-9511-bd69ee4283fc");
-     
-        var writerRole = SeedIdentityRole(builder, "Writer", "5f8692fa-f2fc-4cd8-8b5b-55c14328c654");
-        var subscriberRole = SeedIdentityRole(builder, "Subscriber", "23093a60-69ae-497a-80c7-5f8dfaef9df5");
-        var guestRole = SeedIdentityRole(builder, "Guest", "c7a4d8f0-fe10-4b87-a0d6-756ed808f024");
+        //role seed
+        var editorRole = SeedIdentityRole(builder, "Editor");
+        var writerRole = SeedIdentityRole(builder, "Writer");
+        var subscriberRole = SeedIdentityRole(builder, "Subscriber");
+        //var guestRole = SeedIdentityRole(builder, "Guest"); 
 
-        SeedUser(builder,editorRole,"editman@mail.com", "coolPassword123AQQA");
+        //user seed
 
-       
+        SeedUser(builder, editorRole, "editor@mail.com", "passwrd");
+
+        var writer = SeedUser(builder, writerRole, "writer@mail.com", "passwrd");
+        var writer2 = SeedUser(builder, writerRole, "otherWriter@mail.com", "passwrd");
         
+        var subscriber = SeedUser(builder, subscriberRole, "subscriber@mail.com", "passwrd");
+        var subscriber2 = SeedUser(builder, subscriberRole, "otherSubscriber@mail.com", "passwrd");
+        
+
+
+        //article Seed
+        SeedArticle(builder, "Very cool article", "very cool content", 1, writer);
+        SeedArticle(builder, "Article 2", "Lots of article 2 content here", 2, writer2);
+
+        //comments seed
+        SeedComment(builder,1,1,"I like this :)",subscriber.Id);
+        SeedComment(builder,2,1,"This is fake news",subscriber2.Id);
     }
 
-    private void SeedUser(ModelBuilder builder, IdentityRole role, string email, string password)
+    private IdentityUser SeedUser(ModelBuilder builder, IdentityRole role, string email, string password)
     {
-        var hasher = new PasswordHasher<IdentityUser>();
-        var user = new IdentityUser()
+        var hasher = new PasswordHasher<NewsUser>();
+        var user = new NewsUser()
         {
             Id = Guid.NewGuid().ToString(),
             Email = email,
             UserName = email,
-            NormalizedUserName = email.ToUpper()
+            NormalizedUserName = email.ToUpper(),
         };
         user.PasswordHash = hasher.HashPassword(user, password);
 
-        builder.Entity<IdentityUser>().HasData(user);
-        
-        builder.Entity<IdentityUserRole<string>>()
-            .HasData(new IdentityUserRole<string> { RoleId = role.Id, UserId = user.Id });
+        builder.Entity<NewsUser>().HasData(user);
+
+        builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+        {
+            RoleId = role.Id,
+            UserId = user.Id
+        });
+
+        return user;
     }
 
-    private IdentityRole SeedIdentityRole(ModelBuilder builder, string roleName, string id)
+    private IdentityRole SeedIdentityRole(ModelBuilder builder, string roleName)
     {
+        var id = Guid.NewGuid().ToString();
         var role = new IdentityRole
         {
-            Id = id.ToString(),
+            Id = id,
             Name = roleName,
             NormalizedName = roleName.ToUpper(),
             ConcurrencyStamp = id
@@ -62,7 +88,43 @@ public class NewsContext : IdentityDbContext
         return role;
     }
 
-    private void SeedData(ModelBuilder builder)
+    private void SeedArticle(ModelBuilder builder, string title, string content, int id, IdentityUser author)
     {
+        var article = new Article()
+        {
+            Id = id,
+            AuthorId = author.Id,
+            Content = content,
+            Title = title,
+            CreatedAt = DateTime.Now
+        };
+        builder.Entity<Article>().HasData(article);
     }
+    private void SeedComment(ModelBuilder builder, int id, int articleId, string content, string authorId)
+    {
+        var comment = new Comment()
+        {
+            Id = id,
+            ArticleId = articleId,
+            Content = content,
+            AuthorId = authorId
+        };
+        builder.Entity<Comment>().HasData(comment);
+    }
+    private void SetupRelations(ModelBuilder builder)
+    {
+        builder.Entity<Article>().HasKey(x => x.Id);
+        builder.Entity<Article>().HasMany<Comment>(x => x.Comments).WithOne(x => x.Article);
+        builder.Entity<Article>().HasOne<NewsUser>(x => x.Autor).WithMany(x => x.Articles)
+            .HasForeignKey(x => x.AuthorId);
+
+
+        builder.Entity<Comment>().HasKey(x => x.Id);
+        builder.Entity<Comment>().HasOne<Article>(x => x.Article).WithMany(x => x.Comments)
+            .HasForeignKey(x => x.ArticleId);
+        builder.Entity<Comment>().HasOne<NewsUser>(x => x.Author).WithMany(x => x.Comments)
+            .HasForeignKey(x => x.AuthorId);
+    }
+
+  
 }
